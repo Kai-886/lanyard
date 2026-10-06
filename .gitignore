@@ -24,3 +24,7 @@ coverage/
 
 # freebuff app state (local only)
 .freebuff/
+
+.vercel
+.env*
+!.env.example
