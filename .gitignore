@@ -1,0 +1,23 @@
+node_modules/
+.next/
+out/
+build/
+*.tsbuildinfo
+next-env.d.ts
+
+# local database (SQLite; resolved relative to cwd — see prisma.config.ts)
+dev.db
+dev.db-journal
+*.db
+*.db-journal
+!prisma/migrations/**/*.db
+
+# env
+.env
+.env*.local
+
+# misc
+.DS_Store
+*.log
+coverage/
+.vercel

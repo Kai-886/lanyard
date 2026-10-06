@@ -1,0 +1,99 @@
+// Lanyard — data model
+// Provider: SQLite (the brief explicitly allows SQLite; see README ADR-002 for
+// the Postgres migration path). SQLite has no arrays or enums, so tag membership
+// is a real join table (better for filtering anyway) and status is a validated
+// string at the Zod boundary.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+// URL lives in prisma.config.ts (Prisma 7 requirement).
+datasource db {
+  provider = "sqlite"
+}
+
+model Event {
+  id        String   @id @default(cuid())
+  name      String
+  location  String?
+  startsAt  DateTime
+  endsAt    DateTime
+  accent    String   @default("#FF4D00")
+  leads     Lead[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([startsAt])
+}
+
+model Lead {
+  id              String      @id @default(cuid())
+  name            String
+  company         String?
+  title           String?
+  email           String?
+  phone           String?
+  source          String?
+  notes           String      @default("")
+  status          String      @default("NEW") // LeadStatus, validated by Zod
+  temperature     String? // hot | warm | cold — AI-derived
+  eventId         String
+  event           Event       @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  tags            LeadTag[]
+  nextFollowUpAt  DateTime?
+  lastContactedAt DateTime?
+  aiSummary       String? // JSON-encoded AiSummary
+  aiSummaryHash   String? // cache key
+  aiModel         String?
+  aiGeneratedAt   DateTime?
+  followUps       FollowUp[]
+  aiCalls         AiCall[]
+  search          String      @default("") // lowercased haystack for search
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@index([status, nextFollowUpAt])
+  @@index([eventId])
+  @@index([updatedAt])
+}
+
+model LeadTag {
+  id     String @id @default(cuid())
+  leadId String
+  lead   Lead   @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  tag    String
+
+  @@unique([leadId, tag])
+  @@index([tag])
+}
+
+model FollowUp {
+  id        String   @id @default(cuid())
+  leadId    String
+  lead      Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  channel   String // EMAIL | LINKEDIN | CALL | NOTE
+  direction String // OUT | IN
+  body      String
+  sentAt    DateTime
+  createdAt DateTime @default(now())
+
+  @@index([leadId, sentAt])
+}
+
+model AiCall {
+  id         String   @id @default(cuid())
+  leadId     String?
+  lead       Lead?    @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  kind       String // summarize | draft | triage
+  model      String
+  promptHash String
+  tokensIn   Int      @default(0)
+  tokensOut  Int      @default(0)
+  latencyMs  Int      @default(0)
+  cached     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  @@index([createdAt])
+}

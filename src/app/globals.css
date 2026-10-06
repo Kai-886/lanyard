@@ -1,0 +1,221 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* --------------------------------------------------------------------------
+   Lanyard design tokens — "Credential" (PRD §8.2)
+   One accent does the work; status colours only ever appear as 6px tabs/chips.
+   -------------------------------------------------------------------------- */
+:root {
+  --paper: #f2efe7; /* ticket stock */
+  --paper-2: #e8e3d7; /* raised / secondary surface */
+  --paper-3: #dbd5c6; /* rules and hairlines */
+  --ink: #14120f;
+  --ink-2: #5b564c;
+  --ink-3: #8a8477;
+  --signal: #ff4d00;
+  --signal-soft: #ffe4d8;
+  --on-signal: #1a0a02;
+  --shadow-color: 24 20 14;
+  --shadow-strength: 0.14;
+  color-scheme: light;
+}
+
+.dark {
+  --paper: #0e0d0c;
+  --paper-2: #181614;
+  --paper-3: #2b2724;
+  --ink: #f4f1e9;
+  --ink-2: #a9a294;
+  --ink-3: #7a7469;
+  --signal: #ff5c1a;
+  --signal-soft: #3a1707;
+  --on-signal: #180700;
+  --shadow-color: 0 0 0;
+  --shadow-strength: 0.5;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-paper-3: var(--paper-3);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-signal: var(--signal);
+  --color-signal-soft: var(--signal-soft);
+  --color-on-signal: var(--on-signal);
+
+  --font-display: var(--font-archivo), "Archivo", "Helvetica Neue", sans-serif;
+  --font-sans: var(--font-public-sans), "Public Sans", system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), "JetBrains Mono", ui-monospace, monospace;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-feature-settings: "cv05", "ss01";
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--signal);
+  color: var(--on-signal);
+}
+
+:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ---- Type helpers ------------------------------------------------------ */
+.display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+}
+
+.meta {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* ---- Signature details -------------------------------------------------- */
+
+/* Woven lanyard rule: 6px diagonal band, colour tracks the active event. */
+.lanyard {
+  height: 6px;
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--lanyard, var(--signal)) 0 7px,
+    color-mix(in srgb, var(--lanyard, var(--signal)) 45%, transparent) 7px 14px
+  );
+}
+
+/* The tear-off stub: a dashed rule with two canvas-coloured half-moons. */
+.stub {
+  position: relative;
+  border-top: 1px dashed var(--paper-3);
+}
+.stub::before,
+.stub::after {
+  content: "";
+  position: absolute;
+  top: -8px;
+  width: 15px;
+  height: 15px;
+  border-radius: 999px;
+  background: var(--paper);
+  box-shadow: inset 0 0 0 1px var(--paper-3);
+}
+.stub::before {
+  left: -8px;
+  clip-path: inset(0 0 0 50%);
+}
+.stub::after {
+  right: -8px;
+  clip-path: inset(0 50% 0 0);
+}
+
+/* Ticket-stock surface used by every lead badge. */
+.ticket {
+  background: var(--paper);
+  box-shadow:
+    0 1px 0 0 color-mix(in srgb, var(--shadow-color) 8%, transparent),
+    0 10px 24px -18px rgb(var(--shadow-color) / var(--shadow-strength));
+}
+
+.hairline {
+  border: 1px solid var(--paper-3);
+}
+
+/* Receipt printing: used when an AI draft streams in. */
+.receipt {
+  background-image: linear-gradient(
+    90deg,
+    var(--ink) 0 var(--reveal, 0%),
+    transparent var(--reveal, 0%)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+@keyframes caret {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+.caret::after {
+  content: "▍";
+  animation: caret 900ms steps(1) infinite;
+  color: var(--signal);
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--paper-2);
+}
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--ink) 7%, transparent),
+    transparent
+  );
+  animation: shimmer 1.4s infinite;
+}
+
+/* Subtle paper grain — one texture, applied sparingly, never a gradient mesh. */
+.grain::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 60;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---- Motion ------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---- Scrollbars -------------------------------------------------------- */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--paper-3) transparent;
+}
