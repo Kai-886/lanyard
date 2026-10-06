@@ -70,6 +70,32 @@ node scripts/api-check.mjs   # 25 end-to-end checks against the running server
 
 ---
 
+## Screenshots
+
+Captured from the [live site](https://lanyard-blush.vercel.app) at 1440×950.
+
+**Overview** — today's queue, with due / hot / awaiting-reply / won at a glance:
+
+![Overview — today's queue](docs/screenshots/01-overview.png)
+
+**The rail** — every lead as a badge, with search, filters, sort and bulk select:
+
+![The rail with 40 badges](docs/screenshots/02-leads.png)
+
+**Search** — `?q=founder` with matched substrings highlighted in place:
+
+![Search results with founder highlighted](docs/screenshots/03-search-founder.png)
+
+**Badge detail** — the back of the badge: contact block, notes, status and follow-up timeline:
+
+![Badge detail with notes](docs/screenshots/04-badge-detail.png)
+
+**Capture** — the new-lead form; name + event is enough, the rest is optional:
+
+![New lead capture form](docs/screenshots/05-capture.png)
+
+---
+
 ## Stack
 
 **Next.js 16 (App Router) · React 19 · TypeScript strict · Tailwind CSS v4 · Motion ·
