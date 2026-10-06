@@ -21,3 +21,6 @@ dev.db-journal
 *.log
 coverage/
 .vercel
+
+# freebuff app state (local only)
+.freebuff/
