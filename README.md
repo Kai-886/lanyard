@@ -189,6 +189,18 @@ Every animation is gated by `prefers-reduced-motion`.
   step beyond that.
 - `scripts/api-check.mjs` needs a running server; it is not wired into `npm run check`.
 
+## Deployment
+
+Production is **https://lanyard-blush.vercel.app**. The Vercel project is connected to this
+repository through the Vercel GitHub App (scoped to this one repo), so **every push to `main`
+triggers a production build** — there is no manual deploy step. Environment variables
+(`DATABASE_URL`, `AI_MOCK`, `SENDER_NAME`, `NEXT_PUBLIC_APP_URL`) live in the Vercel project
+settings, not in the repo. The full check suite can run against production:
+
+```bash
+BASE_URL=https://lanyard-blush.vercel.app node scripts/api-check.mjs
+```
+
 ## Roadmap
 
 1. Soft deletes so bulk undo works.
