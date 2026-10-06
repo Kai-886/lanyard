@@ -9,6 +9,9 @@ flips the badge over to reveal the contact details on its back.
 
 Built to the [PRD](PRD.md).
 
+**Live:** https://lanyard-blush.vercel.app (Vercel + Tiger Cloud Postgres, seeded with the 40
+example leads; AI runs in labelled demo mode).
+
 ---
 
 ## Quickstart
@@ -147,7 +150,10 @@ Zod-validated string and tags stay a join table), so the port was a provider swa
 `prisma/schema.prisma`, the adapter in `src/lib/db.ts`, and nothing else. The full 25-check API
 suite passes unchanged against Postgres. Prisma 7 removed `url` from schemas, so the connection
 lives in `prisma.config.ts` — the CLI and the app resolve the same URL. Production runs on Tiger
-Cloud (free tier); development targets a local cluster.
+Cloud (free tier) at https://lanyard-blush.vercel.app; development targets a local cluster. Tiger's
+free services present a self-signed certificate, so the production URL uses `sslmode=no-verify`
+(encryption without identity verification — Tiger's own default posture for free tier); switch to
+`verify-full` once the service is issued a signed certificate.
 
 **ADR-003 — Prisma + a driver adapter.** Typed client, migrations in-repo, and `@prisma/adapter-pg`
 keeps the query engine out of the deploy.
