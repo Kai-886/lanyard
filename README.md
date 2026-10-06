@@ -70,6 +70,15 @@ node scripts/api-check.mjs   # 25 end-to-end checks against the running server
 
 ---
 
+## Demo
+
+A ~70-second walkthrough of the core flow — capture, search & filter, AI summarize, draft,
+delete and undo:
+
+[**▶ Watch the demo**](demo.mp4)
+
+---
+
 ## Screenshots
 
 Captured from the [live site](https://lanyard-blush.vercel.app) at 1440×950.
