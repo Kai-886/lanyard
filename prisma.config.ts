@@ -9,13 +9,14 @@ try {
 
 /**
  * Prisma 7 moved connection URLs out of schema.prisma into this file.
- * DATABASE_URL is resolved relative to the `prisma/` directory, matching the
- * classic `file:./dev.db` convention, so the CLI and the app agree on one file.
+ * DATABASE_URL must be a Postgres connection string (provider is `postgresql`);
+ * the fallback is a conventional local cluster for `db:push` during development.
  */
 export default defineConfig({
   schema: "prisma/schema.prisma",
   datasource: {
-    url: env("DATABASE_URL") ?? "file:./dev.db",
+    url: env("DATABASE_URL") ??
+      "postgresql://postgres:postgres@localhost:5432/lanyard?schema=public",
   },
   migrations: {
     path: "prisma/migrations",

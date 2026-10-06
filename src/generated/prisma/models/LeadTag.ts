@@ -338,6 +338,7 @@ export type LeadTagCreateOrConnectWithoutLeadInput = {
 
 export type LeadTagCreateManyLeadInputEnvelope = {
   data: Prisma.LeadTagCreateManyLeadInput | Prisma.LeadTagCreateManyLeadInput[]
+  skipDuplicates?: boolean
 }
 
 export type LeadTagUpsertWithWhereUniqueWithoutLeadInput = {
@@ -1095,6 +1096,7 @@ export type LeadTagCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * The data used to create many LeadTags.
    */
   data: Prisma.LeadTagCreateManyInput | Prisma.LeadTagCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1113,6 +1115,7 @@ export type LeadTagCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensi
    * The data used to create many LeadTags.
    */
   data: Prisma.LeadTagCreateManyInput | Prisma.LeadTagCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

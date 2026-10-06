@@ -428,6 +428,7 @@ export type FollowUpCreateOrConnectWithoutLeadInput = {
 
 export type FollowUpCreateManyLeadInputEnvelope = {
   data: Prisma.FollowUpCreateManyLeadInput | Prisma.FollowUpCreateManyLeadInput[]
+  skipDuplicates?: boolean
 }
 
 export type FollowUpUpsertWithWhereUniqueWithoutLeadInput = {
@@ -1229,6 +1230,7 @@ export type FollowUpCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * The data used to create many FollowUps.
    */
   data: Prisma.FollowUpCreateManyInput | Prisma.FollowUpCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1247,6 +1249,7 @@ export type FollowUpCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extens
    * The data used to create many FollowUps.
    */
   data: Prisma.FollowUpCreateManyInput | Prisma.FollowUpCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

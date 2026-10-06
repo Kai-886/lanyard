@@ -4,8 +4,11 @@ function read(name: string, fallback = ""): string {
 }
 
 export const env = {
-  /** SQLite by default; swap the URL + Prisma provider for Postgres (see ADR-002). */
-  databaseUrl: read("DATABASE_URL", "file:./dev.db"),
+  /** Postgres connection string (README ADR-002). Fallback targets a local cluster. */
+  databaseUrl: read(
+    "DATABASE_URL",
+    "postgresql://postgres:postgres@localhost:5432/lanyard?schema=public",
+  ),
   appUrl: read("NEXT_PUBLIC_APP_URL", "http://localhost:3000"),
 
   aiProvider: read("AI_PROVIDER", "openai") as "openai" | "anthropic" | "google",

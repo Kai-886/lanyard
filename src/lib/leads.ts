@@ -93,7 +93,7 @@ type Projection = {
  * Order + paginate in application code over a lightweight projection.
  *
  * Prisma cannot express the mixed ordering we need (nulls-last due dates,
- * hot>warm>cold) on SQLite in one portable `orderBy`, and the projection keeps
+ * hot>warm>cold) on any Prisma backend in one portable `orderBy`, and the projection keeps
  * `notes` out of the sort pass. At the stated 5k-lead ceiling this is a few
  * milliseconds against a local file; the full rows are only loaded for the
  * page that is actually returned.

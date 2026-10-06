@@ -142,9 +142,9 @@ export function SettingsView() {
         <section className="hairline flex flex-col gap-4 rounded-[4px] bg-paper p-5">
           <h2 className="display text-lg">Data</h2>
           <p className="text-sm leading-relaxed text-ink-2">
-            Everything lives in SQLite (<code className="meta">prisma/dev.db</code>) via Prisma. The
-            export respects whatever filters you have applied on the rail, so &quot;Export&quot; gives
-            you the view you&apos;re looking at, not a dump.
+            Everything lives in Postgres (Tiger Cloud in production, local cluster in dev) via
+            Prisma. The export respects whatever filters you have applied on the rail, so
+            &quot;Export&quot; gives you the view you&apos;re looking at, not a dump.
           </p>
           <div className="flex flex-wrap gap-2">
             <a
@@ -169,8 +169,8 @@ export function SettingsView() {
               quickstart.
             </li>
             <li>
-              On Vercel, add <code className="meta">DATABASE_URL</code> pointing at a hosted SQLite
-              or Postgres URL, plus <code className="meta">AI_API_KEY</code>.
+              On Vercel, add <code className="meta">DATABASE_URL</code> pointing at your hosted
+              Postgres URL, plus <code className="meta">AI_API_KEY</code>.
             </li>
             <li>Run <code className="meta">prisma db push</code> and <code className="meta">db:seed</code> once against the target database.</li>
           </ol>

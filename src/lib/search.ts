@@ -1,7 +1,7 @@
 /**
  * Search index + query helpers.
  *
- * SQLite has no full-text index in Prisma, so each lead carries a pre-lowercased
+ * Prisma has no portable full-text index across engines, so each lead carries a pre-lowercased
  * `search` haystack built at write time. Queries split the user's input on
  * whitespace and AND the terms together, which behaves better than a single
  * substring match for multi-word searches like "northwind revops".

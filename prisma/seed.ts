@@ -1,4 +1,4 @@
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client";
 import { LEAD_STATUSES, type LeadStatus, type Temperature } from "../src/lib/statuses";
 import { buildSearchIndex } from "../src/lib/search";
@@ -8,8 +8,10 @@ import { buildSearchIndex } from "../src/lib/search";
  * 40 leads across 3 events, notes written the way people actually scribble them.
  */
 
-const adapter = new PrismaBetterSqlite3({
-  url: process.env.DATABASE_URL ?? "file:./dev.db",
+const adapter = new PrismaPg({
+  connectionString:
+    process.env.DATABASE_URL ??
+    "postgresql://postgres:postgres@localhost:5432/lanyard?schema=public",
 });
 const db = new PrismaClient({ adapter });
 

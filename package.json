@@ -13,7 +13,7 @@
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
-    "db:reset": "rm -f dev.db dev.db-journal && prisma db push --force-reset && tsx prisma/seed.ts",
+    "db:reset": "prisma db push --force-reset && tsx prisma/seed.ts",
     "db:studio": "prisma studio",
     "check": "tsc --noEmit && eslint ."
   },
@@ -25,15 +25,15 @@
     "@ai-sdk/google": "^4.0.87",
     "@ai-sdk/openai": "^4.0.83",
     "@hookform/resolvers": "5.9.1",
-    "@prisma/adapter-better-sqlite3": "7.10.0",
+    "@prisma/adapter-pg": "^7.10.0",
     "@prisma/client": "7.10.0",
     "@tanstack/react-query": "5.104.1",
     "ai": "^7.0.127",
-    "better-sqlite3": "^12.4.1",
     "cmdk": "1.1.1",
     "lucide-react": "1.52.0",
     "motion": "14.0.0",
     "next": "16.3.8",
+    "pg": "^8.23.1",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "react-hook-form": "7.89.0",
@@ -42,7 +42,6 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "4.3.3",
-    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^24.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
@@ -55,7 +54,6 @@
   },
   "allowScripts": {
     "@prisma/engines@7.10.0": true,
-    "better-sqlite3@12.11.1": true,
     "esbuild@0.28.2": true,
     "prisma@7.10.0": true,
     "unrs-resolver@1.12.2": true

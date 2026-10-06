@@ -16,9 +16,12 @@ Built to the [PRD](PRD.md).
 ```bash
 npm install          # also approve install scripts: npm install-scripts approve --all
 cp .env.example .env # demo AI mode is on by default
-npm run db:reset     # create + seed the SQLite database
+npm run db:reset     # create + seed the Postgres database (DATABASE_URL required)
 npm run dev          # http://localhost:3000
 ```
+
+The database is **PostgreSQL** (see ADR-002): point `DATABASE_URL` at any local or hosted
+cluster — the quickstart default is `postgresql://postgres:postgres@localhost:5432/lanyard`.
 
 Seeds **40 hand-written leads across 3 events** (SaaStr Annual, Web Summit, a SaaS meetup), with
 notes, tags, follow-up history and 6 overdue follow-ups so the "due today" view has something to
@@ -31,7 +34,7 @@ npm run typecheck    # tsc --noEmit (strict, noUncheckedIndexedAccess)
 npm run lint         # eslint (0 errors)
 npm run build        # production build
 npx next start -p 3000 &
-node scripts/api-check.mjs   # 24 end-to-end checks against the running server
+node scripts/api-check.mjs   # 25 end-to-end checks against the running server
 ```
 
 ---
@@ -67,7 +70,7 @@ node scripts/api-check.mjs   # 24 end-to-end checks against the running server
 ## Stack
 
 **Next.js 16 (App Router) · React 19 · TypeScript strict · Tailwind CSS v4 · Motion ·
-TanStack Query · React Hook Form + Zod · Prisma 7 + SQLite (better-sqlite3) · Vercel AI SDK**
+TanStack Query · React Hook Form + Zod · Prisma 7 + PostgreSQL (@prisma/adapter-pg) · Vercel AI SDK**
 
 ---
 
@@ -75,7 +78,7 @@ TanStack Query · React Hook Form + Zod · Prisma 7 + SQLite (better-sqlite3) ·
 
 | Variable | Default | Purpose |
 | --- | --- | --- |
-| `DATABASE_URL` | `file:./dev.db` | SQLite path, resolved relative to the project root (see `prisma.config.ts`) |
+| `DATABASE_URL` | `postgresql://postgres:postgres@localhost:5432/lanyard?schema=public` | Postgres connection string — local cluster in dev, Tiger Cloud in production (see `prisma.config.ts`) |
 | `AI_PROVIDER` | `openai` | `openai` \| `anthropic` \| `google` |
 | `AI_API_KEY` | *(empty)* | Enables live AI. Empty + `AI_MOCK=0` disables AI entirely. |
 | `AI_MODEL` | `gpt-4o-mini` | Model id passed to the provider |
@@ -136,23 +139,26 @@ benefit for a single-user app — and one deployable means one live link that st
 reviewer opens it. The REST surface is complete and isolated behind `src/lib/api.ts`, so a Python
 service could be extracted later without redesigning the client.
 
-**ADR-002 — SQLite, with a documented path to PostgreSQL.** SQLite satisfies the brief, needs no
-daemon (this machine has no Postgres or Docker), and gives a `git clone → npm run db:reset → dev`
-quickstart that cannot fail on a reviewer's laptop. Moving to Postgres is a provider swap in
-`prisma/schema.prisma` + `prisma.config.ts`, plus replacing the `search` `contains` filter with
-`websearch_to_tsquery`. Prisma 7 removed `url` from schemas, so the connection lives in
-`prisma.config.ts` — the CLI and the app resolve the same file.
+**ADR-002 — PostgreSQL, ported from an SQLite first cut.** The app originally shipped on SQLite
+(brief-compliant, zero daemon) and was ported to `provider = "postgresql"` + `@prisma/adapter-pg`
+for deployment on Vercel, where serverless filesystems are ephemeral. No query code changed — the
+schema uses no engine-specific features (no raw SQL, no arrays, no native enums; status stays a
+Zod-validated string and tags stay a join table), so the port was a provider swap in
+`prisma/schema.prisma`, the adapter in `src/lib/db.ts`, and nothing else. The full 25-check API
+suite passes unchanged against Postgres. Prisma 7 removed `url` from schemas, so the connection
+lives in `prisma.config.ts` — the CLI and the app resolve the same URL. Production runs on Tiger
+Cloud (free tier); development targets a local cluster.
 
-**ADR-003 — Prisma + a driver adapter.** Typed client, migrations in-repo, and `@prisma/adapter-better-sqlite3`
+**ADR-003 — Prisma + a driver adapter.** Typed client, migrations in-repo, and `@prisma/adapter-pg`
 keeps the query engine out of the deploy.
 
 **ADR-004 — Server state in TanStack Query, view state in the URL.** Two domains, explicitly
 separated, no global store. Theme uses `useSyncExternalStore` so SSR and hydration agree.
 
-**ADR-005 — Order and paginate over a lightweight projection.** SQLite in Prisma cannot express
-mixed `nulls-last` due-date ordering plus hot>warm>cold in one portable `orderBy`. The repository
+**ADR-005 — Order and paginate over a lightweight projection.** No portable Prisma `orderBy`
+expresses mixed `nulls-last` due-date ordering plus hot>warm>cold in one pass. The repository
 sorts an id/sort-key projection in application code and only loads full rows for the page returned.
-At the stated 5k-lead ceiling this is milliseconds against a local file, and it keeps `notes` out
+At the stated 5k-lead ceiling this is milliseconds against the database, and it keeps `notes` out
 of the sort pass.
 
 **Design — "Credential".** The UI is built from badge grammar rather than a UI kit: perforated
@@ -180,7 +186,7 @@ Every animation is gated by `prefers-reduced-motion`.
 ## Roadmap
 
 1. Soft deletes so bulk undo works.
-2. Postgres + `websearch_to_tsquery` ranking, and a cursor over a real index.
+2. `websearch_to_tsquery` ranking (Postgres full-text) and a cursor over a real index.
 3. Daily triage digest over the due queue (PRD FR-18) and AI temperature scoring (FR-19).
 4. CSV import with column mapping (FR-11).
 5. Optional shared passcode gate (FR-25).

@@ -1,8 +1,9 @@
 // Lanyard — data model
-// Provider: SQLite (the brief explicitly allows SQLite; see README ADR-002 for
-// the Postgres migration path). SQLite has no arrays or enums, so tag membership
-// is a real join table (better for filtering anyway) and status is a validated
-// string at the Zod boundary.
+// Provider: PostgreSQL (Tiger Cloud in production, see README ADR-002 — the app
+// originally shipped on SQLite and was ported for Vercel deployment). Tag
+// membership stays a real join table (better for filtering than an array) and
+// status stays a Zod-validated string rather than a native enum, so the schema
+// remains portable across engines.
 
 generator client {
   provider = "prisma-client"
@@ -11,7 +12,7 @@ generator client {
 
 // URL lives in prisma.config.ts (Prisma 7 requirement).
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
 }
 
 model Event {

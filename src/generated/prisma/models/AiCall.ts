@@ -568,6 +568,7 @@ export type AiCallCreateOrConnectWithoutLeadInput = {
 
 export type AiCallCreateManyLeadInputEnvelope = {
   data: Prisma.AiCallCreateManyLeadInput | Prisma.AiCallCreateManyLeadInput[]
+  skipDuplicates?: boolean
 }
 
 export type AiCallUpsertWithWhereUniqueWithoutLeadInput = {
@@ -1402,6 +1403,7 @@ export type AiCallCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * The data used to create many AiCalls.
    */
   data: Prisma.AiCallCreateManyInput | Prisma.AiCallCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1420,6 +1422,7 @@ export type AiCallCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensio
    * The data used to create many AiCalls.
    */
   data: Prisma.AiCallCreateManyInput | Prisma.AiCallCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */
